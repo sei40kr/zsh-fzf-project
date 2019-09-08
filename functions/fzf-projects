@@ -40,7 +40,7 @@ fzf-projects() {
 
     # if tmux is not running
     if [[ -z "$TMUX" ]]; then
-        BUFFER="cd $(shescape "$project_root")"
+        BUFFER="cd $(printf '%q' "$project_root")"
         zle accept-line
         return
     fi
