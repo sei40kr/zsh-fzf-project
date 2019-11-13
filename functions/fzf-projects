@@ -28,9 +28,7 @@ fzf-projects() {
         [[ -d "${HOME}/.dotfiles" ]] && echo "${HOME}/.dotfiles"
         [[ -d "${HOME}/.emacs.d" ]] && echo "${HOME}/.emacs.d"
         [[ -d "${HOME}/.spacemacs.d" ]] && echo "${HOME}/.spacemacs.d"
-        fd . -d 1 -t d \
-           "${HOME}/develop/workspace" \
-           "${GOPATH}/src/github.com/sei40kr"
+        find "${HOME}/develop/workspace" -mindepth 1 -maxdepth 1 -type d
     } | __home_to_tilde | eval "fzf --prompt='Select a project to open: ' ${FZF_DEFAULT_OPTS}" | __tilde_to_home | read -r project_root
 
     if [[ -z "$project_root" ]]; then
