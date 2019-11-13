@@ -24,11 +24,13 @@ __tilde_to_home() {
 }
 
 fzf-projects() {
+    local workspace_dir="${WORKSPACE_DIR:-${HOME}/develop/workspace}"
+
     {
         [[ -d "${HOME}/.dotfiles" ]] && echo "${HOME}/.dotfiles"
         [[ -d "${HOME}/.emacs.d" ]] && echo "${HOME}/.emacs.d"
         [[ -d "${HOME}/.spacemacs.d" ]] && echo "${HOME}/.spacemacs.d"
-        find "${HOME}/develop/workspace" -mindepth 1 -maxdepth 1 -type d
+        find "$workspace_dir" -mindepth 1 -maxdepth 1 -type d
     } | __home_to_tilde | eval "fzf --prompt='Select a project to open: ' ${FZF_DEFAULT_OPTS}" | __tilde_to_home | read -r project_root
 
     if [[ -z "$project_root" ]]; then
