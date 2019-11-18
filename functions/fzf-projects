@@ -3,35 +3,55 @@
 # fzf-projects
 # author: Seong Yong-ju <sei40kr@gmail.com>
 
-__home_to_tilde() {
-    while read -r a_path; do
-        if [[ "$a_path" == "${HOME}"* ]]; then
-            echo "~${a_path:${#HOME}}"
+: "${FZF_PROJECT_PROJECT_DIR_MAX_DEPTH:=2}"
+
+__fzf-projects_list-projects() {
+    # List known projects
+    for project in "${FZF_PROJECTS_KNOWN_PROJECTS[@]}"; do
+        if [[ -d "$project" ]]; then
+            echo "$project"
+        fi
+    done
+
+    # List projects under workspaces
+    find -L "${FZF_PROJECTS_WORKSPACE_DIRS[@]}" \
+         -maxdepth "$(($FZF_PROJECTS_PROJECT_DIR_MAX_DEPTH+1))" \
+         -type d \
+         -name '.git' \
+         -exec dirname {} +
+}
+
+__fzf-projects_replace-home-with-tilda() {
+    while read -r dir; do
+        if [[ "$dir" == "${HOME}"* ]]; then
+            echo "~${dir:${#HOME}}"
         else
-            echo "$a_path"
+            echo "$dir"
         fi
     done
 }
 
-__tilde_to_home() {
-    read -r a_path
+__fzf-projects_replace-tilda-with-home() {
+    read -r dir
 
-    if [[ "$a_path" == '~'* ]]; then
-        echo "${HOME}${a_path:1}"
+    if [[ "$dir" == '~'* ]]; then
+        echo "${HOME}${dir:1}"
     else
-        echo "$a_path"
+        echo "$dir"
     fi
 }
 
 fzf-projects() {
-    local workspace_dir="${WORKSPACE_DIR:-${HOME}/develop/workspace}"
+    if [[ "${#FZF_PROJECTS_WORKSPACE_DIRS}" == 0 ]]; then
+        echo 'FZF_PROJECTS_WORKSPACE_DIRS is empty. Aborting.' >&2
+        exit 1
+    fi
 
-    {
-        [[ -d "${HOME}/.dotfiles" ]] && echo "${HOME}/.dotfiles"
-        [[ -d "${HOME}/.emacs.d" ]] && echo "${HOME}/.emacs.d"
-        [[ -d "${HOME}/.spacemacs.d" ]] && echo "${HOME}/.spacemacs.d"
-        find "$workspace_dir" -mindepth 1 -maxdepth 1 -type d
-    } | __home_to_tilde | eval "fzf --prompt='Select a project to open: ' ${FZF_DEFAULT_OPTS}" | __tilde_to_home | read -r project_root
+    __fzf-projects_list-projects | \
+        __fzf-projects_replace-home-with-tilda | \
+        eval "fzf --prompt='Project to open: ' ${FZF_DEFAULT_OPTS}" |
+        __fzf-projects_replace-tilda-with-home |
+        read -r project_root
 
     if [[ -z "$project_root" ]]; then
         zle reset-prompt
