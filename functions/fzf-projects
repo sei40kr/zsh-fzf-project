@@ -72,7 +72,7 @@ fzf-projects() {
     if [[ "$current_session_id" == "$project_id" ]]; then
         # if working directory is not under the project root
         if [[ "$PWD" != "$project_root" && "$PWD" != "$project_root"/* ]]; then
-            BUFFER="cd $(shescape "$project_root")"
+            BUFFER="cd $(printf '%q' "$project_root")"
             zle accept-line
         fi
 
@@ -89,7 +89,7 @@ fzf-projects() {
     # if current session has no name
     if [[ "$current_session_id" == <-> ]]; then
         tmux rename-session -t "$current_session_id" -- "$project_id"
-        BUFFER="cd $(shescape "$project_root")"
+        BUFFER="cd $(printf '%q' "$project_root")"
         zle accept-line
 
         return
