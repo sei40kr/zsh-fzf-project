@@ -15,7 +15,7 @@ __fzf-projects_list-projects() {
 
     # List projects under workspaces
     find -L "${FZF_PROJECTS_WORKSPACE_DIRS[@]}" \
-         -maxdepth "$(($FZF_PROJECTS_PROJECT_DIR_MAX_DEPTH+1))" \
+         -maxdepth "$(($FZF_PROJECTS_WORKSPACE_MAX_DEPTH+1))" \
          -type d \
          -name '.git' \
          -exec dirname {} +
