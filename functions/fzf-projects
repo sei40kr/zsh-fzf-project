@@ -58,45 +58,8 @@ fzf-projects() {
         return
     fi
 
-    # if tmux is not running
-    if [[ -z "$TMUX" ]]; then
-        BUFFER="cd $(printf '%q' "$project_root")"
-        zle accept-line
-        return
-    fi
-
-    local project_id="$(basename "$project_root" | tr -d '.')"
-    local current_session_id="$(tmux display-message -p '#S')"
-
-    # if current project is selected
-    if [[ "$current_session_id" == "$project_id" ]]; then
-        # if working directory is not under the project root
-        if [[ "$PWD" != "$project_root" && "$PWD" != "$project_root"/* ]]; then
-            BUFFER="cd $(printf '%q' "$project_root")"
-            zle accept-line
-        fi
-
-        return
-    fi
-
-    # switch to the session if exists
-    tmux switch-client -t "$project_id" 2>/dev/null
-    # if the session has already existed
-    if [[ "$?" == 0 ]]; then
-        return
-    fi
-
-    # if current session has no name
-    if [[ "$current_session_id" == <-> ]]; then
-        tmux rename-session -t "$current_session_id" -- "$project_id"
-        BUFFER="cd $(printf '%q' "$project_root")"
-        zle accept-line
-
-        return
-    fi
-
-    tmux new-session -dc "$project_root" -s "$project_id"
-    tmux switch-client -t "$project_id"
+    BUFFER="cd $(printf '%q' "$project_root")"
+    zle accept-line
 }
 
 fzf-projects "$@"
