@@ -2,10 +2,30 @@
 
 List and go to the root directory of a project in your workspace.
 
+## Requirements
+
+- [fzf](https://github.com/junegunn/fzf)
+
 ## Install
 
-```sh
+### Install with zplugin (recommended)
+
+```zsh
 zplugin light sei40kr/zsh-fzf-projects
+
+# see Customization section for details
+FZF_PROJECT_WORKSPACE_DIRS=( ~/develop/workspace )
+FZF_PROJECT_PROJECT_DIR_MAX_DEPTH=2
+FZF_PROJECT_KNOWN_PROJECTS=(
+  ~/.dotfiles
+  ~/.emacs.d
+)
+```
+
+### Install with zplug
+
+```zsh
+zplug sei40kr/zsh-fzf-projects
 
 # see Customization section for details
 FZF_PROJECT_WORKSPACE_DIRS=( ~/develop/workspace )
