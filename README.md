@@ -1,5 +1,7 @@
 # zsh-fzf-projects
 
+List and go to the root directory of a project in your workspace.
+
 ## Install
 
 ```sh
