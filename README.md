@@ -8,10 +8,10 @@ List and go to the root directory of a project in your workspace.
 
 ## Install
 
-### Install with zplugin (recommended)
+### Install with zinit (recommended)
 
 ```zsh
-zplugin light sei40kr/zsh-fzf-projects
+zinit light sei40kr/zsh-fzf-projects
 
 # see Customization section for details
 FZF_PROJECT_WORKSPACE_DIRS=( ~/develop/workspace )
